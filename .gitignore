@@ -1,0 +1,10 @@
+coverage/
+debian/files
+debian/.debhelper/
+debian/keel-pve/
+debian/debhelper-build-stamp
+debian/*.substvars
+debian/*.debhelper.log
+*.deb
+*.buildinfo
+*.changes
