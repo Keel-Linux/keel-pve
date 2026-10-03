@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily refresh of the Keel Linux template index
+Documentation=man:keel-pve(8)
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1h
+Persistent=yes
+
+[Install]
+WantedBy=timers.target

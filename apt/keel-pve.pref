@@ -1,0 +1,11 @@
+# Installed by keel-pve. On a Proxmox VE host the Keel archive provides
+# keel-pve and its key, and nothing else: every other package from it has
+# priority -1 and is never installed or upgraded from there.
+
+Package: keel-pve keel-archive-keyring
+Pin: release o=Keel Linux
+Pin-Priority: 500
+
+Package: *
+Pin: release o=Keel Linux
+Pin-Priority: -1

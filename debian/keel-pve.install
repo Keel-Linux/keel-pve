@@ -1,0 +1,7 @@
+bin/keel-pve        usr/sbin
+lib/main.sh         usr/lib/keel-pve
+lib/common.sh       usr/lib/keel-pve
+lib/index.sh        usr/lib/keel-pve
+lib/storage.sh      usr/lib/keel-pve
+lib/commands.sh     usr/lib/keel-pve
+lib/aplinfo.awk     usr/lib/keel-pve

@@ -1,11 +1,13 @@
-# Coverage gate for keel-pve: 0 until the suite lands (bootstrap), then 95 percent, the bar for code the project
+# Coverage gate for keel-pve: 95 percent, the bar for code the project
 # writes (decision 0003), measured by tests/coverage.sh (bats under kcov,
 # decision 0004). The check is "tests / coverage". Raise only.
 #
 # The suite signs a local index with a throwaway OpenPGP key and verifies
-# it with the real sqv, and serves the index and templates to the real curl
-# through file:// URLs; pvesm and id are stubs. No test touches the live
-# system or the network.
+# it with the real sqv, and maps https://keel.test/ onto a scratch directory
+# for the real curl; pvesm and id are stubs. tests/pin.bats asks apt itself
+# about the shipped pin, from local archives apt-ftparchive (apt-utils)
+# indexes; the time limit tests use a python3 listener on 127.0.0.1. No
+# test touches the live system or reaches the network.
 name: tests
 on:
   pull_request:
@@ -15,8 +17,8 @@ jobs:
   tests:
     uses: keel-linux/.github/.github/workflows/test-shell.yml@main
     with:
-      threshold: 0
-      apt-packages: gnupg sqv curl
+      threshold: 95
+      apt-packages: gnupg sqv curl apt-utils python3
   # A change that ships must come with a changelog entry, or it cannot be
   # installed and never reaches a host. The rule and its tests are
   # bin/require-changelog of the .github repository. The check is

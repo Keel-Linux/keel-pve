@@ -1,0 +1,36 @@
+Source: keel-pve
+Section: admin
+Priority: optional
+Maintainer: KeelLinux maintainers <admin@keellinux.org>
+Uploaders: Marcos Mendez <mendez.foto@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.7.2
+Vcs-Git: https://github.com/keel-linux/keel-pve.git
+Vcs-Browser: https://github.com/keel-linux/keel-pve
+Rules-Requires-Root: no
+
+Package: keel-pve
+Architecture: all
+Depends:
+ keel-archive-keyring (>= 0.1.1),
+ sqv,
+ curl,
+ ${misc:Depends},
+Enhances: pve-manager
+Description: Signed Keel Linux container templates on a Proxmox VE host
+ keel-pve fetches the Keel Linux template index, verifies its signature
+ with sqv against the Keel archive key from keel-archive-keyring, the way
+ pveam verifies its own sources, and downloads a chosen template into the
+ vztmpl content of a Proxmox VE storage. A template is kept only when its
+ sha512 matches the signed index, and it is written under the file name
+ the index gives, so pct create and the Create CT dialog of the web UI
+ use it like any other template.
+ .
+ The Keel templates do not appear in the Templates download dialog of the
+ web UI: its sources are fixed in pve-manager, and this package changes
+ no pve-manager file.
+ .
+ It installs an apt pin, /etc/apt/preferences.d/keel-pve, under which the
+ Keel archive provides only keel-pve and keel-archive-keyring to the host.
+ A daily keel-pve-update.timer is shipped disabled.
