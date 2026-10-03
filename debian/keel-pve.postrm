@@ -1,0 +1,10 @@
+#!/bin/sh
+# Purge removes the verified index and its lock. Templates downloaded into
+# a storage are the administrator's and stay where they are.
+set -e
+
+if [ "$1" = "purge" ]; then
+    rm -rf /var/lib/keel-pve
+fi
+
+#DEBHELPER#

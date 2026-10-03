@@ -1,0 +1,16 @@
+[Unit]
+Description=Fetch and verify the Keel Linux template index
+Documentation=man:keel-pve(8)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/keel-pve update
+# curl gives up on each index file after 120 s; this bounds the lock wait too.
+TimeoutStartSec=15min
+ProtectSystem=strict
+StateDirectory=keel-pve
+PrivateTmp=yes
+ProtectHome=yes
+NoNewPrivileges=yes

@@ -1,0 +1,14 @@
+#! /usr/bin/make -f
+
+%:
+	dh $@
+
+# The timer is shipped disabled: an administrator enables it with
+# systemctl enable --now keel-pve-update.timer.
+override_dh_installsystemd:
+	dh_installsystemd --name=keel-pve-update --no-enable --no-start
+
+# The apt pin of apt/keel-pve.pref, a conffile under its package's name.
+override_dh_install:
+	dh_install
+	install -D -m 0644 apt/keel-pve.pref debian/keel-pve/etc/apt/preferences.d/keel-pve

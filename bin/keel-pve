@@ -1,0 +1,12 @@
+#!/bin/bash
+# keel-pve(8): signed Keel Linux LXC templates on a Proxmox VE host.
+# Installed as /usr/sbin/keel-pve.
+#
+# Everything this program decides or writes is a function of
+# /usr/lib/keel-pve/main.sh (decision 0004: the executable is a thin main).
+# Set KEEL_PVE_LIB to run it from a git checkout:
+#
+#   KEEL_PVE_LIB=$PWD/lib bin/keel-pve --help
+set -uo pipefail
+. "${KEEL_PVE_LIB:-/usr/lib/keel-pve}/main.sh"
+pve_main "$@"

@@ -1,0 +1,142 @@
+.TH KEEL\-PVE 8 "2026-10-03" "keel-pve 0.1.0" "System Administration"
+.SH NAME
+keel\-pve \- signed Keel Linux container templates on a Proxmox VE host
+.SH SYNOPSIS
+.B keel\-pve update
+.br
+.B keel\-pve available
+.br
+.B keel\-pve download
+.I STORAGE TEMPLATE
+.br
+.B keel\-pve list
+.SH DESCRIPTION
+.B keel\-pve
+makes Keel Linux templates available to
+.BR pct (1)
+and to the Create CT dialog of the Proxmox VE web interface. It fetches
+the Keel template index, verifies it, and downloads a template into a
+storage's
+.B vztmpl
+content, where Proxmox VE lists it like any other template.
+.PP
+It changes no file of pve\-manager. The Templates download dialog of the
+web interface lists only the sources built into pve\-manager, so Keel
+templates do not appear there; they appear in the template list of the
+storage once downloaded.
+.SH COMMANDS
+.TP
+.B update
+Fetches
+.I aplinfo.dat.gz
+and
+.I aplinfo.dat.asc
+from
+.IR https://releases.keellinux.org/pve/ ,
+unpacks the index and verifies the detached signature with
+.PP
+.RS 7
+sqv \-\-keyring /usr/share/keyrings/keel\-archive\-keyring.gpg aplinfo.dat.asc aplinfo.dat
+.RE
+.IP
+the same call
+.B pveam update
+makes with its own keyring. Every record must parse the way pveam parses
+it. Only then are the index and its signature stored in
+.IR /var/lib/keel\-pve/ ;
+a refused update keeps the index that was there.
+.TP
+.B available
+Lists the templates of the stored index: package, version, template file
+name and description. The stored index is verified again first.
+.TP
+.BI download " STORAGE TEMPLATE"
+.I TEMPLATE
+is a package name such as
+.BR keel\-web ,
+which selects its newest version, or a template file name from
+.BR available .
+The storage must have
+.B vztmpl
+content (\fBpvesm status \-\-content vztmpl\fR). The destination is the
+path
+.B pvesm path
+.IR STORAGE :vztmpl/ FILE
+returns, never a guessed one, and
+.I FILE
+is the name the index gives. The template is written into a new private
+directory that
+.BR mktemp (1)
+creates in that directory, its sha512 is compared with the signed index,
+and only a match is renamed into place; a symlink at the final name is
+replaced, never written through. A
+.I Location
+must be an https URL whose last segment is a template file name. A mismatch is refused and leaves the
+storage as it was. A template already present with the right sha512 is not
+fetched again.
+.TP
+.B list
+Shows the Keel template volumes of every storage with
+.B vztmpl
+content, and marks those the current index does not list.
+.SH LIMITS
+curl gives up after 30 seconds connecting, 120 seconds on each index file
+and two hours on a template. A command that finds the state directory
+locked by another waits 10 minutes at most.
+.SH TIMER
+.B keel\-pve\-update.timer
+runs
+.B keel\-pve update
+once a day. It is installed disabled:
+.PP
+.RS 4
+systemctl enable \-\-now keel\-pve\-update.timer
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+success
+.TP
+.B 1
+usage error
+.TP
+.B 2
+update or download run without root
+.TP
+.B 3
+the index does not verify or does not parse
+.TP
+.B 4
+a transfer failed
+.TP
+.B 5
+no index yet, unknown template, or a storage pvesm does not resolve
+.TP
+.B 6
+the downloaded template does not match the sha512 of the index
+.TP
+.B 7
+a file could not be written
+.TP
+.B 8
+the keyring of keel\-archive\-keyring is missing
+.SH FILES
+.TP
+.I /etc/apt/preferences.d/keel\-pve
+the apt pin this package installs: from the Keel archive only keel\-pve and
+keel\-archive\-keyring, priority 500; every other package, priority \-1
+.TP
+.I /usr/share/keyrings/keel\-archive\-keyring.gpg
+the Keel archive key, from keel\-archive\-keyring; primary key fingerprint
+AD0964BE3F09DED469A3B6B2148E951314703180
+.TP
+.I /var/lib/keel\-pve/aplinfo.dat
+.TQ
+.I /var/lib/keel\-pve/aplinfo.dat.asc
+the verified index, its signature and the lock; removed on purge. Downloaded
+templates stay in their storage.
+.SH SEE ALSO
+.BR pveam (1),
+.BR pct (1),
+.BR pvesm (1),
+.BR sqv (1)

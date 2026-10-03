@@ -1,0 +1,19 @@
+keel-pve (0.1.0) trixie; urgency=medium
+
+  * First release. keel-pve update fetches aplinfo.dat.gz and
+    aplinfo.dat.asc from releases.keellinux.org/pve, verifies the
+    signature with sqv against keel-archive-keyring the way pveam does,
+    and stores the index under /var/lib/keel-pve only when it verifies
+    and every record parses. keel-pve available lists it, keel-pve
+    download STORAGE TEMPLATE writes a template into the path pvesm path
+    gives for STORAGE:vztmpl/<file>, under the index's file name, renamed
+    into place only after its sha512 matched, and keel-pve list shows the
+    Keel templates already in the vztmpl storages. A template is written
+    into a mktemp directory, never through a planted symlink; a Location
+    must be https; curl has connect and transfer time limits and the lock
+    a bounded wait. /etc/apt/preferences.d/keel-pve pins every package of
+    the Keel archive at -1 except keel-pve and keel-archive-keyring.
+    keel-pve-update.timer runs update daily and is shipped disabled. No
+    pve-manager file is touched.
+
+ -- Marcos Mendez <mendez.foto@gmail.com>  Sat, 03 Oct 2026 12:00:00 +0000

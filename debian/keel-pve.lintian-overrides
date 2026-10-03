@@ -1,0 +1,5 @@
+# keel-pve is not for the Debian archive. Its pin is the point: on a
+# Proxmox VE host the Keel archive may provide keel-pve and its key and
+# nothing else (priority -1 for every other package). Shipping it in the
+# package means a host has it from the first install on.
+keel-pve: package-installs-apt-preferences [etc/apt/preferences.d/keel-pve]
