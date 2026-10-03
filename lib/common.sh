@@ -12,8 +12,14 @@
 #   KEEL_PVE_TEMPLATE_MAX_TIME  seconds curl may spend connecting, and on
 #                       the whole transfer of an index file or a template
 #   KEEL_PVE_LOCK_WAIT  seconds to wait for the lock of the state directory
+#   KEEL_PVE_APT_SOURCES_LIST, KEEL_PVE_APT_SOURCES_DIR
+#                       where apt reads its sources, searched for the Keel
+#                       archive (lib/source.sh)
+#   KEEL_PVE_ARCHIVE_URI, KEEL_PVE_ARCHIVE_SUITE
+#                       the Keel archive and the suite keel-pve is published
+#                       in, as the hint names them
 
-KEEL_PVE_VERSION="0.1.0"
+KEEL_PVE_VERSION="0.1.1"
 KEEL_PVE_INDEX_URL="${KEEL_PVE_INDEX_URL:-https://releases.keellinux.org/pve/aplinfo.dat}"
 KEEL_PVE_KEYRING="${KEEL_PVE_KEYRING:-/usr/share/keyrings/keel-archive-keyring.gpg}"
 KEEL_PVE_STATE_DIR="${KEEL_PVE_STATE_DIR:-/var/lib/keel-pve}"
@@ -24,6 +30,12 @@ KEEL_PVE_CONNECT_TIMEOUT="${KEEL_PVE_CONNECT_TIMEOUT:-30}"
 KEEL_PVE_INDEX_MAX_TIME="${KEEL_PVE_INDEX_MAX_TIME:-120}"
 KEEL_PVE_TEMPLATE_MAX_TIME="${KEEL_PVE_TEMPLATE_MAX_TIME:-7200}"
 KEEL_PVE_LOCK_WAIT="${KEEL_PVE_LOCK_WAIT:-600}"
+KEEL_PVE_APT_SOURCES_LIST="${KEEL_PVE_APT_SOURCES_LIST:-/etc/apt/sources.list}"
+KEEL_PVE_APT_SOURCES_DIR="${KEEL_PVE_APT_SOURCES_DIR:-/etc/apt/sources.list.d}"
+KEEL_PVE_ARCHIVE_URI="${KEEL_PVE_ARCHIVE_URI:-https://archive.keellinux.org}"
+# keel-pve is published in trixie-testing; this becomes trixie when the
+# package is promoted.
+KEEL_PVE_ARCHIVE_SUITE="${KEEL_PVE_ARCHIVE_SUITE:-trixie-testing}"
 
 # The file name extensions pve-storage accepts for a vztmpl volume
 # ($PVE::Storage::VZTMPL_EXT_RE_1), as an extended regular expression.

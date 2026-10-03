@@ -23,10 +23,14 @@ scratch_setup() {
     export KEEL_PVE_KEYRING="$TMP/keyring.gpg"
     export KEEL_PVE_INDEX_URL="https://keel.test/aplinfo.dat"
     export KEEL_PVE_PROTOCOLS="=file"
+    export KEEL_PVE_APT_SOURCES_LIST="$TMP/apt/sources.list"
+    export KEEL_PVE_APT_SOURCES_DIR="$TMP/apt/sources.list.d"
     REAL_CURL="$(command -v curl)"
     export REAL_CURL
     mkdir -p "$STUBS" "$SERVE" "$STORE"
     mkdir -m 700 "$GNUPGHOME"
+    mkdir -p "$KEEL_PVE_APT_SOURCES_DIR"
+    keel_source > "$KEEL_PVE_APT_SOURCES_DIR/keel.sources"
     export PATH="$STUBS:$PATH"
     stub id 'echo 0'
     stub curl 'echo "curl $*" >> "$TMP/curl.log"
@@ -41,6 +45,17 @@ scratch_teardown() {
     [ -f "$TMP/server.pid" ] && kill "$(cat "$TMP/server.pid")" 2> /dev/null
     gpgconf --kill gpg-agent 2> /dev/null || true
     rm -rf "$TMP"
+}
+
+# keel_source: the deb822 Keel apt source the README gives.
+keel_source() {
+    cat << SOURCE
+Types: deb
+URIs: https://archive.keellinux.org
+Suites: trixie-testing
+Components: main
+Signed-By: /usr/share/keyrings/keel-archive-keyring.gpg
+SOURCE
 }
 
 # stub NAME BODY: an executable first in PATH.

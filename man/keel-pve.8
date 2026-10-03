@@ -1,4 +1,4 @@
-.TH KEEL\-PVE 8 "2026-10-03" "keel-pve 0.1.0" "System Administration"
+.TH KEEL\-PVE 8 "2026-10-03" "keel-pve 0.1.1" "System Administration"
 .SH NAME
 keel\-pve \- signed Keel Linux container templates on a Proxmox VE host
 .SH SYNOPSIS
@@ -79,6 +79,23 @@ fetched again.
 Shows the Keel template volumes of every storage with
 .B vztmpl
 content, and marks those the current index does not list.
+.SH APT SOURCE
+keel\-pve and keel\-archive\-keyring are upgraded from the Keel archive,
+.IR https://archive.keellinux.org .
+When no line of
+.I /etc/apt/sources.list
+or of a
+.I *.list
+or
+.I *.sources
+file in
+.I /etc/apt/sources.list.d
+names it outside a comment, every subcommand first prints on standard
+error the file to create,
+.IR /etc/apt/sources.list.d/keel.sources ,
+and its deb822 block, with
+.B Suites: trixie\-testing
+while the package is published there. The exit status is unchanged.
 .SH LIMITS
 curl gives up after 30 seconds connecting, 120 seconds on each index file
 and two hours on a template. A command that finds the state directory
