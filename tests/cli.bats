@@ -11,7 +11,7 @@ teardown() { scratch_teardown; }
 @test "the executable prints its version" {
     run "$REPO/bin/keel-pve" --version
     [ "$status" -eq 0 ]
-    [ "$output" = "keel-pve 0.1.0" ]
+    [ "$output" = "keel-pve 0.1.1" ]
 }
 
 @test "the help names every subcommand and what it does not do" {

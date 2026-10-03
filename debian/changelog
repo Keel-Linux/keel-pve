@@ -1,3 +1,15 @@
+keel-pve (0.1.1) trixie; urgency=medium
+
+  * keel-pve is published in trixie-testing only, so the README's
+    Suites: trixie left apt install keel-pve with "Unable to locate
+    package". The README now gives trixie-testing, until the package is
+    promoted to trixie. Every subcommand prints a hint on stderr, the
+    file /etc/apt/sources.list.d/keel.sources and its deb822 block, when
+    no apt source in sources.list or sources.list.d (*.list, *.sources)
+    names https://archive.keellinux.org; exit statuses are unchanged.
+
+ -- Marcos Mendez <mendez.foto@gmail.com>  Sat, 03 Oct 2026 18:00:00 +0000
+
 keel-pve (0.1.0) trixie; urgency=medium
 
   * First release. keel-pve update fetches aplinfo.dat.gz and

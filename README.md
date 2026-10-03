@@ -31,9 +31,14 @@ template list once downloaded.
 
        Types: deb
        URIs: https://archive.keellinux.org
-       Suites: trixie
+       Suites: trixie-testing
        Components: main
        Signed-By: /usr/share/keyrings/keel-archive-keyring.gpg
+
+   `keel-pve` is published in `trixie-testing` only for now; with
+   `Suites: trixie` apt finds no `keel-pve` ("Unable to locate package").
+   The suite becomes `trixie` once the package is promoted there.
+   Without this source `keel-pve` prints this block as a hint on stderr.
 
 2. Install the package. `keel-archive-keyring` comes with it and from then
    on keeps the key current:

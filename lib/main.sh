@@ -6,6 +6,7 @@ KEEL_PVE_LIB="${KEEL_PVE_LIB:-/usr/lib/keel-pve}"
 . "$KEEL_PVE_LIB/index.sh"
 . "$KEEL_PVE_LIB/storage.sh"
 . "$KEEL_PVE_LIB/commands.sh"
+. "$KEEL_PVE_LIB/source.sh"
 
 pve_usage() {
     cat << USAGE
@@ -58,6 +59,7 @@ pve_main() {
             return "$EXIT_USAGE"
             ;;
     esac
+    source_hint
     case "$cmd" in
         update) index_update ;;
         available) cmd_available ;;
