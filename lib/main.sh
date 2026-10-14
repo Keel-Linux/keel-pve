@@ -19,6 +19,7 @@ Signed Keel Linux container templates on a Proxmox VE host.
 
   update      fetch the Keel template index and verify its signature with
               sqv against /usr/share/keyrings/keel-archive-keyring.gpg
+              and, when it is there, keel-images-keyring.gpg
   available   list the templates of the verified index
   download STORAGE TEMPLATE
               download TEMPLATE (a package such as keel-web, or a template

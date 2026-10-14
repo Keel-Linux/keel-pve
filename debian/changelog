@@ -1,3 +1,19 @@
+keel-pve (0.1.2) trixie; urgency=medium
+
+  * The index signature is also trusted from the images keyring,
+    /usr/share/keyrings/keel-images-keyring.gpg, when the file is there
+    (handbook decision 0055). sqv gets the main keyring and the images
+    keyring as 2 files, never merged, and needs 1 good signature by a key
+    of either file. keel-archive-keyring 0.3.0 and later installs the
+    images keyring. Before 0.3.0, keel-pve verifies with the main keyring
+    alone, as before.
+  * The index is still signed by the main key. An index signed by the
+    main key and the images key together verifies with the main keyring
+    alone, so the publisher can add the images signature before every
+    host has the images keyring.
+
+ -- KeelLinux maintainers <admin@keellinux.org>  Wed, 14 Oct 2026 18:00:00 +0000
+
 keel-pve (0.1.1) trixie; urgency=medium
 
   * keel-pve is published in trixie-testing only, so the README's

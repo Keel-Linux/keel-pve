@@ -21,6 +21,7 @@ scratch_setup() {
     export KEEL_PVE_LIB="$REPO/lib"
     export KEEL_PVE_STATE_DIR="$TMP/state"
     export KEEL_PVE_KEYRING="$TMP/keyring.gpg"
+    export KEEL_PVE_IMAGES_KEYRING="$TMP/images-keyring.gpg"
     export KEEL_PVE_INDEX_URL="https://keel.test/aplinfo.dat"
     export KEEL_PVE_PROTOCOLS="=file"
     export KEEL_PVE_APT_SOURCES_LIST="$TMP/apt/sources.list"

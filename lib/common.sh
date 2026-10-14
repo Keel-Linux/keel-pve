@@ -4,8 +4,13 @@
 # Every path is overridable from the environment so the tests run against a
 # scratch tree:
 #   KEEL_PVE_INDEX_URL  the signed index; .gz and .asc are appended
-#   KEEL_PVE_KEYRING    the keyring keel-archive-keyring installs, the only
-#                       keys an index or a template checksum is trusted from
+#   KEEL_PVE_KEYRING    the main keyring keel-archive-keyring installs. The
+#                       apt source of keel-pve names it, and an index is
+#                       trusted from it
+#   KEEL_PVE_IMAGES_KEYRING
+#                       the images keyring keel-archive-keyring 0.3.0 and
+#                       later installs (handbook decision 0055). An index is
+#                       also trusted from it, when the file is there
 #   KEEL_PVE_STATE_DIR  where the verified index and its signature are kept
 #   KEEL_PVE_PROTOCOLS  curl's --proto list for every transfer
 #   KEEL_PVE_CONNECT_TIMEOUT, KEEL_PVE_INDEX_MAX_TIME,
@@ -19,9 +24,10 @@
 #                       the Keel archive and the suite keel-pve is published
 #                       in, as the hint names them
 
-KEEL_PVE_VERSION="0.1.1"
+KEEL_PVE_VERSION="0.1.2"
 KEEL_PVE_INDEX_URL="${KEEL_PVE_INDEX_URL:-https://releases.keellinux.org/pve/aplinfo.dat}"
 KEEL_PVE_KEYRING="${KEEL_PVE_KEYRING:-/usr/share/keyrings/keel-archive-keyring.gpg}"
+KEEL_PVE_IMAGES_KEYRING="${KEEL_PVE_IMAGES_KEYRING:-/usr/share/keyrings/keel-images-keyring.gpg}"
 KEEL_PVE_STATE_DIR="${KEEL_PVE_STATE_DIR:-/var/lib/keel-pve}"
 KEEL_PVE_PROTOCOLS="${KEEL_PVE_PROTOCOLS:-=https}"
 KEEL_PVE_CONNECT_TIMEOUT="${KEEL_PVE_CONNECT_TIMEOUT:-30}"
@@ -109,7 +115,14 @@ with_lock() {
 }
 
 # verify_signature SIG DATA: the call pveam makes (PVE::APLInfo), with the
-# Keel keyring in place of pve-manager's.
+# Keel keyrings in place of pve-manager's. Decision 0055 moves the index to
+# the images key. Until every host trusts that key, the index is signed by
+# the main key, so both keyrings are given to sqv, each as its own file and
+# never merged. sqv needs 1 good signature by a key of either file. The
+# images keyring is optional, because keel-archive-keyring before 0.3.0
+# does not install it.
 verify_signature() {
-    sqv --keyring "$KEEL_PVE_KEYRING" "$1" "$2" > /dev/null
+    local rings=(--keyring "$KEEL_PVE_KEYRING")
+    [ ! -s "$KEEL_PVE_IMAGES_KEYRING" ] || rings+=(--keyring "$KEEL_PVE_IMAGES_KEYRING")
+    sqv "${rings[@]}" "$1" "$2" > /dev/null
 }

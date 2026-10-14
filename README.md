@@ -7,7 +7,8 @@ Signed Keel Linux container templates on a Proxmox VE 9 host.
 for the Keel index what `pveam` does for its own: it fetches
 `aplinfo.dat.gz` and `aplinfo.dat.asc` from
 `https://releases.keellinux.org/pve/`, verifies the signature with `sqv`
-against the Keel archive key, and downloads a template into a storage's
+against the Keel archive key or the Keel images key (handbook decision
+0055), and downloads a template into a storage's
 `vztmpl` content after checking its sha512 against the signed index. From
 there `pct create` and the web UI use it like any other template.
 
