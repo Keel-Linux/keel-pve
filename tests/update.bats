@@ -218,3 +218,70 @@ teardown() { scratch_teardown; }
     [ "$status" -eq 7 ]
     [[ "$output" == *"cannot open"* ]]
 }
+
+# ------------------------------------------- decision 0055: the images key
+
+# trust_images KEY: the images keyring holds KEY and nothing else.
+trust_images() {
+    gpg --batch --quiet --yes --export "$1" > "$KEEL_PVE_IMAGES_KEYRING" 2> /dev/null
+}
+
+# publish_by SIGNER...: the index with 1 signature by each SIGNER, in 1 .asc.
+publish_by() {
+    local users=()
+    for k in "$@"; do users+=(--local-user "$k"); done
+    cp "$TMP/index" "$SERVE/aplinfo.dat"
+    gzip -n -9 -c "$SERVE/aplinfo.dat" > "$SERVE/aplinfo.dat.gz"
+    gpg --batch --quiet --yes "${users[@]}" --detach-sign --armor \
+        -o "$SERVE/aplinfo.dat.asc" "$SERVE/aplinfo.dat" 2> /dev/null
+}
+
+@test "an index signed by the images key alone is accepted when the images keyring is there" {
+    standard_index
+    images="$(make_signing_key keel-images)"
+    trust_images "$images"
+    publish_by "$images"
+    run "$REPO/bin/keel-pve" update
+    [ "$status" -eq 0 ] || { echo "$output"; false; }
+    cmp "$KEEL_PVE_STATE_DIR/aplinfo.dat.asc" "$SERVE/aplinfo.dat.asc"
+}
+
+@test "an index signed by the images key alone is refused without the images keyring" {
+    standard_index
+    images="$(make_signing_key keel-images)"
+    publish_by "$images"
+    [ ! -e "$KEEL_PVE_IMAGES_KEYRING" ]
+    run "$REPO/bin/keel-pve" update
+    [ "$status" -ne 0 ]
+    [ ! -e "$KEEL_PVE_STATE_DIR/aplinfo.dat" ]
+}
+
+@test "an index signed by main and images is accepted with the main keyring alone" {
+    standard_index
+    images="$(make_signing_key keel-images)"
+    publish_by "$KEY" "$images"
+    [ "$(grep -c 'BEGIN PGP SIGNATURE' "$SERVE/aplinfo.dat.asc")" -eq 1 ]
+    [ "$(gpg --batch --status-fd 1 --verify "$SERVE/aplinfo.dat.asc" "$SERVE/aplinfo.dat" 2> /dev/null | grep -c VALIDSIG)" -eq 2 ]
+    run "$REPO/bin/keel-pve" update
+    [ "$status" -eq 0 ] || { echo "$output"; false; }
+}
+
+@test "an index signed by main and images is accepted with both keyrings" {
+    standard_index
+    images="$(make_signing_key keel-images)"
+    trust_images "$images"
+    publish_by "$KEY" "$images"
+    run "$REPO/bin/keel-pve" update
+    [ "$status" -eq 0 ] || { echo "$output"; false; }
+}
+
+@test "the images keyring does not make a foreign signature good" {
+    standard_index
+    images="$(make_signing_key keel-images)"
+    other="$(make_signing_key keel-other)"
+    trust_images "$images"
+    publish_by "$other"
+    run "$REPO/bin/keel-pve" update
+    [ "$status" -ne 0 ]
+    [ ! -e "$KEEL_PVE_STATE_DIR/aplinfo.dat" ]
+}

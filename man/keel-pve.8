@@ -36,8 +36,11 @@ from
 unpacks the index and verifies the detached signature with
 .PP
 .RS 7
-sqv \-\-keyring /usr/share/keyrings/keel\-archive\-keyring.gpg aplinfo.dat.asc aplinfo.dat
+sqv \-\-keyring /usr/share/keyrings/keel\-archive\-keyring.gpg \-\-keyring /usr/share/keyrings/keel\-images\-keyring.gpg aplinfo.dat.asc aplinfo.dat
 .RE
+.IP
+The second keyring is given only when the file is there. sqv needs 1 good
+signature by a key of either file. The 2 keyrings are never merged.
 .IP
 the same call
 .B pveam update
@@ -146,6 +149,11 @@ keel\-archive\-keyring, priority 500; every other package, priority \-1
 .I /usr/share/keyrings/keel\-archive\-keyring.gpg
 the Keel archive key, from keel\-archive\-keyring; primary key fingerprint
 AD0964BE3F09DED469A3B6B2148E951314703180
+.TP
+.I /usr/share/keyrings/keel\-images\-keyring.gpg
+the Keel images key (handbook decision 0055), from keel\-archive\-keyring
+0.3.0 or later; primary key fingerprint
+E71DB9C3CA6AC18075395CC3ED3A709C4F3E2F3C
 .TP
 .I /var/lib/keel\-pve/aplinfo.dat
 .TQ
